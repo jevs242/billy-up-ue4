@@ -109,18 +109,12 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 void AStucture::Spawn()
 {
 	print("Spawn");
-	FVector Location = GetActorLocation();
+	FVector Location = PlayerCube->FirstStuctureLoc;
 	if (PlayerCube)
 	{
-		if (PlayerCube->CounterStucture > 1)
-		{
-			Location.Z += 725.0f;
-		}
-		else
-		{
-			Location.Z += 725.0f * 2;
-		}
-		PlayerCube->CounterStucture = 0;
+
+		Location.Z += 725.0f * PlayerCube->HowManyStucture;
+		PlayerCube->HowManyStucture++;
 		AStucture* Stucture = GetWorld()->SpawnActor<AStucture>(BP_Stucture, FTransform(FRotator(0,0,0), Location, FVector(1, 1, 1)));
 	}
 }

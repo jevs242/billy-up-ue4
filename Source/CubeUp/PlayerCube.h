@@ -54,5 +54,8 @@ private:
 public:
 	int TryJump = 0;
 	int CounterStucture = 0;
+	int HowManyStucture = 2;
+	
+	FVector FirstStuctureLoc = FVector(80 , 850 , 470); //(X=80.000000,Y=850.000000,Z=470.000000)
 
 };
