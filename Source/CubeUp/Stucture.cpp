@@ -41,6 +41,9 @@ AStucture::AStucture()
 	AboveFloorBoxComponent->SetBoxExtent(FVector(150, 500, 100));
 	BelowFloorBoxComponent->SetGenerateOverlapEvents(true);
 
+	FloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
+	BelowFloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
+	AboveFloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -48,9 +51,11 @@ void AStucture::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
-	BelowFloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
-	AboveFloorBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AStucture::OnBeginOverlap);
+
+	FVector FloorLoc = Floor->GetComponentLocation();
+	float RandomX = FloorLoc.Y + FMath::RandRange(-350, 350);
+
+	Floor->SetWorldLocation(FVector(FloorLoc.X, RandomX ,FloorLoc.Z));
 
 	TArray<AActor*> ReturnedActors;
 	UGameplayStatics::GetAllActorsOfClass(this, APlayerCube::StaticClass(), ReturnedActors);
@@ -80,10 +85,13 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			{
 				if (Player)
 				{
-					PlayerCube->Score++;
-					Player->TryJump = 0;
 					IsUsedFloor = true;
-					Spawn();
+					if (IsUsedFloor)
+					{
+						PlayerCube->Score++;
+						Spawn();
+					}
+					Player->TryJump = 0;
 				}
 			}
 		}
@@ -104,7 +112,6 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		APlayerCube* Player = Cast<APlayerCube>(OtherActor);
 		if (Player)
 		{
-			print("Destroy");
 			Destroy();
 		}
 	}
@@ -112,13 +119,15 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AStucture::Spawn()
 {
-	print("Spawn");
-	FVector Location = PlayerCube->FirstStuctureLoc;
 	if (PlayerCube)
 	{
-		Location.Z += 725.0f * PlayerCube->HowManyStucture;
-		PlayerCube->HowManyStucture++;
-		AStucture* Stucture = GetWorld()->SpawnActor<AStucture>(BP_Stucture, FTransform(FRotator(0,0,0), Location, FVector(1, 1, 1)));
+		for (int i = 0; i < 2; i++)
+		{
+			FVector Location = PlayerCube->FirstStuctureLoc;
+			Location.Z += 725.0f * PlayerCube->HowManyStucture;
+			PlayerCube->HowManyStucture++;
+			AStucture* Stucture = GetWorld()->SpawnActor<AStucture>(BP_Stucture, FTransform(FRotator(0,0,0), Location, FVector(1, 1, 1)));
+		}
 	}
 }
 
