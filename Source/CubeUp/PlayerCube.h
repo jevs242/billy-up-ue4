@@ -54,9 +54,10 @@ public:
 		int LimitTryJump = 3;
 	int TryJump = 0;
 	int CounterStucture = 0;
-	int HowManyStucture = 2;
+	UPROPERTY(EditAnywhere, Category = Property)
+		int HowManyStucture = 3;
 	int Score = 0;
 	
-	FVector FirstStuctureLoc = FVector(80 , 850 , 470); //(X=80.000000,Y=850.000000,Z=470.000000)
+	FVector FirstStuctureLoc = FVector(80 , 0 , 470); //(X=80.000000,Y=0.000000,Z=470.000000)
 
 };

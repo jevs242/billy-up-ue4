@@ -19,7 +19,7 @@ APlayerCube::APlayerCube()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true);
 	CameraBoom->bDoCollisionTest = false;
-	CameraBoom->TargetArmLength = 700.f;
+	CameraBoom->TargetArmLength = 900.f;
 	CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 75.f);
 	CameraBoom->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
