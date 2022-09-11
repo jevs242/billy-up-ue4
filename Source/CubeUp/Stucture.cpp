@@ -73,14 +73,18 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 	if (OverlappedComponent == FloorBoxComponent)
 	{
-		if (!IsUsedFloor)
+		APlayerCube* Player = Cast<APlayerCube>(OtherActor);
+		if (Player)
 		{
-			APlayerCube* Player = Cast<APlayerCube>(OtherActor);
-			if (Player)
+			if (!IsUsedFloor || IsUsedFloor && Player->TryJump != 0)
 			{
-				Player->TryJump = 0;
-				IsUsedFloor = true;
-				Spawn();
+				if (Player)
+				{
+					PlayerCube->Score++;
+					Player->TryJump = 0;
+					IsUsedFloor = true;
+					Spawn();
+				}
 			}
 		}
 	}
@@ -98,10 +102,10 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	else if (OverlappedComponent == AboveFloorBoxComponent)
 	{
 		APlayerCube* Player = Cast<APlayerCube>(OtherActor);
-		if (Player && !IsUsedAbove)
+		if (Player)
 		{
-			IsUsedAbove = true;
-			Player->CounterStucture++;
+			print("Destroy");
+			Destroy();
 		}
 	}
 }
@@ -112,7 +116,6 @@ void AStucture::Spawn()
 	FVector Location = PlayerCube->FirstStuctureLoc;
 	if (PlayerCube)
 	{
-
 		Location.Z += 725.0f * PlayerCube->HowManyStucture;
 		PlayerCube->HowManyStucture++;
 		AStucture* Stucture = GetWorld()->SpawnActor<AStucture>(BP_Stucture, FTransform(FRotator(0,0,0), Location, FVector(1, 1, 1)));

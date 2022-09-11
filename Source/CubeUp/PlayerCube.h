@@ -47,14 +47,15 @@ private:
 	void MoveRight();
 	void MoveLeft();
 
-	UPROPERTY(EditAnywhere , Category = Rules)
-		int LimitTryJump = 3;
 	UPROPERTY(EditAnywhere, Category = Property)
 		float Speed;
 public:
+	UPROPERTY(EditAnywhere , Category = Rules)
+		int LimitTryJump = 3;
 	int TryJump = 0;
 	int CounterStucture = 0;
 	int HowManyStucture = 2;
+	int Score = 0;
 	
 	FVector FirstStuctureLoc = FVector(80 , 850 , 470); //(X=80.000000,Y=850.000000,Z=470.000000)
 
