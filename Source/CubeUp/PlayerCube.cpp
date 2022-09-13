@@ -4,6 +4,7 @@
 #include "PlayerCube.h"
 #include "Components/PrimitiveComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/World.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -61,12 +62,13 @@ void APlayerCube::Tick(float DeltaTime)
 
 	Mesh->SetRelativeLocation(FVector(0, Mesh->GetRelativeLocation().Y, Mesh->GetRelativeLocation().Z));
 	RootComponent->SetRelativeLocation(Mesh->GetRelativeLocation());
+	Seconds = GetWorld()->GetTimeSeconds();
 }
 
 
 void APlayerCube::Jump()
 {
-	if (TryJump < LimitTryJump)
+	if (TryJump < LimitTryJump || Score == 0)
 	{
 		Mesh->AddForce(FVector(0,0 , Speed));
 		++TryJump;
@@ -81,4 +83,19 @@ void APlayerCube::MoveRight()
 void APlayerCube::MoveLeft()
 {
 	Mesh->AddForce(FVector(0, Speed / 1.5,0));
+}
+
+int APlayerCube::GetScore()
+{
+	return Score;
+}
+
+float APlayerCube::GetSeconds()
+{
+	return Seconds;
+}
+
+int APlayerCube::GetTryJump()
+{
+	return LimitTryJump - TryJump;
 }

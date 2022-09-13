@@ -52,12 +52,25 @@ private:
 public:
 	UPROPERTY(EditAnywhere , Category = Rules)
 		int LimitTryJump = 3;
-	int TryJump = 0;
-	int CounterStucture = 0;
+
+	UFUNCTION(BlueprintPure)
+		int GetScore();
+
+	UFUNCTION(BlueprintPure)
+		float GetSeconds();
+
+	UFUNCTION(BlueprintPure)
+		int GetTryJump();
+	
 	UPROPERTY(EditAnywhere, Category = Property)
 		int HowManyStucture = 3;
-	int Score = 0;
-	
+
 	FVector FirstStuctureLoc = FVector(80 , 0 , 470); //(X=80.000000,Y=0.000000,Z=470.000000)
 
+	int TryJump = 0;
+	int CounterStucture = 0;
+	int Score = 0;
+	
+	float Seconds = 0;
+	
 };

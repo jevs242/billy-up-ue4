@@ -25,6 +25,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 		class UStaticMeshComponent* Floor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
+		class UStaticMeshComponent* LineDeath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
+		class UStaticMeshComponent* BgWallRight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
+		class UStaticMeshComponent* BgWallLeft;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Box)
 		class UBoxComponent* FloorBoxComponent;
 
@@ -33,6 +42,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Box)
 		class UBoxComponent* AboveFloorBoxComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Box)
+		class UBoxComponent* ForWallBoxComponent;
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,11 +63,16 @@ private:
 	
 	void Spawn();
 
-private:
 	bool IsUsedFloor = false;
 	bool IsUsedBelow = false;
 	bool IsUsedAbove = false;
 
 public:
 	APlayerCube* PlayerCube;
+
+	UPROPERTY(EditAnywhere, Category = Property)
+		float Speed = 250;
+
+	UPROPERTY(EditAnywhere, Category = Property)
+		int NumStucture = 0;
 };
