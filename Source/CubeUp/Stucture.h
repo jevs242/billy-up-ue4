@@ -62,6 +62,7 @@ private:
 		TSubclassOf<AStucture> BP_Stucture;
 	
 	void Spawn();
+	void DestroyBall();
 
 	bool IsUsedFloor = false;
 	bool IsUsedBelow = false;

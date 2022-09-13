@@ -78,8 +78,6 @@ AStucture::AStucture()
 void AStucture::BeginPlay()
 {
 	Super::BeginPlay();
-	//FTimerHandle SpawnTimer;
-	//GetWorldTimerManager().SetTimer(SpawnTimer, this, &AStucture::TurnOnTick, 2.f, true);
 
 	FVector FloorLoc = Floor->GetComponentLocation();
 	float RandomX = FloorLoc.Y + FMath::RandRange(-345, 345);
@@ -147,7 +145,8 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		{
 			if (Player)
 			{
-				Player->Destroy();
+				FTimerHandle DestroyTimer;
+				GetWorldTimerManager().SetTimer(DestroyTimer, this, &AStucture::DestroyBall, .1f, true);
 			}
 		}
 	}
@@ -182,6 +181,11 @@ void AStucture::Spawn()
 			Stucture->NumStucture = PlayerCube->HowManyStucture;
 		}
 	}
+}
+
+void AStucture::DestroyBall()
+{
+	PlayerCube->Mesh->DestroyComponent();
 }
 
 
