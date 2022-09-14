@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+
 #define print(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
 // Sets default values
@@ -131,6 +132,16 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 					{
 						Spawn();
 						IsUsedFloor = true;
+
+						if (PlayerCube->PointSound)
+						{
+							UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerCube->PointSound,PlayerCube->GetActorLocation(),PlayerCube->GetActorRotation(), 0.5f, FMath::RandRange(1.f, 1.3f));
+						}
+					}
+
+					if (PlayerCube->BounceParticle && !PlayerCube->IsDead)
+					{
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PlayerCube->BounceParticle, PlayerCube->GetActorLocation(), FRotator(0, 0, 0));
 					}
 					Player->TryJump = 0;
 					LineDeath->SetVisibility(true);
@@ -146,7 +157,7 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 			if (Player)
 			{
 				FTimerHandle DestroyTimer;
-				GetWorldTimerManager().SetTimer(DestroyTimer, this, &AStucture::DestroyBall, .1f, true);
+				GetWorldTimerManager().SetTimer(DestroyTimer, this, &AStucture::DestroyBall, .1f, true);			
 			}
 		}
 	}
@@ -155,6 +166,7 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		APlayerCube* Player = Cast<APlayerCube>(OtherActor);
 		if (Player)
 		{
+			Player->BeginInGame = true;
 			Destroy();
 		}
 	}
@@ -185,7 +197,21 @@ void AStucture::Spawn()
 
 void AStucture::DestroyBall()
 {
-	PlayerCube->Mesh->DestroyComponent();
+	if (PlayerCube->Mesh)
+	{
+		PlayerCube->Mesh->DestroyComponent();
+		PlayerCube->Dead();
+		if (PlayerCube->DeathParticle && !PlayerCube->IsDead)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PlayerCube->DeathParticle, PlayerCube->GetActorLocation(), FRotator(0, 0, 0));
+		}
+		if (PlayerCube->DeadSound && !PlayerCube->IsDead)
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerCube->DeadSound, PlayerCube->GetActorLocation(), PlayerCube->GetActorRotation(), 0.5f, FMath::RandRange(0.5f, .7f));
+		}
+
+		PlayerCube->IsDead = true;
+	}
 }
 
 

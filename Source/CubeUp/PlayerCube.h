@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Blueprint/UserWidget.h"
 #include "PlayerCube.generated.h"
 
 UCLASS()
@@ -49,6 +50,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Property)
 		float Speed;
+
+
+
+	float BeginLocationZ = 0;
 public:
 	UPROPERTY(EditAnywhere , Category = Rules)
 		int LimitTryJump = 3;
@@ -65,6 +70,29 @@ public:
 	UPROPERTY(EditAnywhere, Category = Property)
 		int HowManyStucture = 3;
 
+	UPROPERTY(EditAnywhere, Category = Widget)
+		TSubclassOf<UUserWidget> WBP_GameOver;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+		UParticleSystem* UpParticle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+		UParticleSystem* BounceParticle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "VFX")
+		UParticleSystem* DeathParticle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+		USoundBase* PointSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+		USoundBase* JumpSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+		USoundBase* DeadSound;
+
+	UUserWidget* UWidget;
+
 	FVector FirstStuctureLoc = FVector(80 , 0 , 470); //(X=80.000000,Y=0.000000,Z=470.000000)
 
 	int TryJump = 0;
@@ -72,5 +100,18 @@ public:
 	int Score = 0;
 	
 	float Seconds = 0;
+
+	void ReturnJump();
+
+	bool BeginInGame = false;
+
+	void Dead();
+
+	bool IsDead = false;
+
+
+
+	
+
 	
 };

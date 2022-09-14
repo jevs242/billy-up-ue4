@@ -5,6 +5,8 @@
 #include "Components/PrimitiveComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Engine/World.h"
+#include "ParticleDefinitions.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -52,37 +54,62 @@ void APlayerCube::BeginPlay()
 {
 
 	Super::BeginPlay();
-	
+	BeginLocationZ = FMath::RoundFromZero(Mesh->GetComponentLocation().Z);
 }
 
 // Called every frame
 void APlayerCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (Mesh)
+	{
+		Mesh->SetRelativeLocation(FVector(0, Mesh->GetRelativeLocation().Y, Mesh->GetRelativeLocation().Z));
+		RootComponent->SetRelativeLocation(Mesh->GetRelativeLocation());
+	}
 
-	Mesh->SetRelativeLocation(FVector(0, Mesh->GetRelativeLocation().Y, Mesh->GetRelativeLocation().Z));
-	RootComponent->SetRelativeLocation(Mesh->GetRelativeLocation());
+	if (Score == 0 && FMath::RoundFromZero(Mesh->GetComponentLocation().Z) == BeginLocationZ && TryJump == LimitTryJump)
+	{
+		TryJump = 0;
+	}
+	
 	Seconds = GetWorld()->GetTimeSeconds();
 }
 
 
 void APlayerCube::Jump()
 {
-	if (TryJump < LimitTryJump || Score == 0)
+	if (TryJump < LimitTryJump)
 	{
 		Mesh->AddForce(FVector(0,0 , Speed));
 		++TryJump;
+
+		if (JumpSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), JumpSound, GetActorLocation(), GetActorRotation(), 0.1f, FMath::RandRange(1.f, 1.3f));
+		}
+
+
+		if (UpParticle && !IsDead)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), UpParticle, Mesh->GetComponentLocation(), FRotator(0, 0, 0));
+		}
 	}
 }
 
 void APlayerCube::MoveRight()
 {
-	Mesh->AddForce(FVector(0, -Speed / 1.5, 0));
+	if (Mesh)
+	{
+		Mesh->AddForce(FVector(0, -Speed / 1.5, 0));
+	}
 }
 
 void APlayerCube::MoveLeft()
 {
-	Mesh->AddForce(FVector(0, Speed / 1.5,0));
+	if (Mesh)
+	{
+		Mesh->AddForce(FVector(0, Speed / 1.5,0));
+	}
 }
 
 int APlayerCube::GetScore()
@@ -98,4 +125,21 @@ float APlayerCube::GetSeconds()
 int APlayerCube::GetTryJump()
 {
 	return LimitTryJump - TryJump;
+}
+
+void APlayerCube::ReturnJump()
+{
+	TryJump = 0;
+}
+
+void APlayerCube::Dead()
+{
+	if (WBP_GameOver)
+	{
+		UWidget = CreateWidget<UUserWidget>(GetWorld(), WBP_GameOver);
+		if (UWidget)
+		{
+			UWidget->AddToViewport();
+		}
+	}
 }
