@@ -199,17 +199,22 @@ void AStucture::DestroyBall()
 {
 	if (PlayerCube->Mesh)
 	{
-		PlayerCube->Mesh->DestroyComponent();
-		PlayerCube->Dead();
-		if (PlayerCube->DeathParticle && !PlayerCube->IsDead)
+		if (!PlayerCube->IsDead)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PlayerCube->DeathParticle, PlayerCube->GetActorLocation(), FRotator(0, 0, 0));
-		}
-		if (PlayerCube->DeadSound && !PlayerCube->IsDead)
-		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerCube->DeadSound, PlayerCube->GetActorLocation(), PlayerCube->GetActorRotation(), 0.5f, FMath::RandRange(0.5f, .7f));
-		}
 
+			PlayerCube->Mesh->DestroyComponent();
+
+			PlayerCube->Dead();
+			if (PlayerCube->DeathParticle)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PlayerCube->DeathParticle, PlayerCube->GetActorLocation(), FRotator(0, 0, 0));
+			}
+			if (PlayerCube->DeadSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerCube->DeadSound, PlayerCube->GetActorLocation(), PlayerCube->GetActorRotation(), 0.5f, FMath::RandRange(0.5f, .7f));
+			}
+
+		}
 		PlayerCube->IsDead = true;
 	}
 }
