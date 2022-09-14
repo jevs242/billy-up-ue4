@@ -8,6 +8,9 @@
 #include "ParticleDefinitions.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "SaveRecord.h"
+
+#define print(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
 // Sets default values
 APlayerCube::APlayerCube()
@@ -55,6 +58,7 @@ void APlayerCube::BeginPlay()
 
 	Super::BeginPlay();
 	BeginLocationZ = FMath::RoundFromZero(Mesh->GetComponentLocation().Z);
+	LoadRecord(0, "0");
 }
 
 // Called every frame
@@ -127,6 +131,16 @@ int APlayerCube::GetTryJump()
 	return LimitTryJump - TryJump;
 }
 
+int APlayerCube::GetScoreRecord()
+{
+	return ScoreRecord;
+}
+
+float APlayerCube::GetSecondRecord()
+{
+	return SecondRecord;
+}
+
 void APlayerCube::ReturnJump()
 {
 	TryJump = 0;
@@ -140,6 +154,52 @@ void APlayerCube::Dead()
 		if (UWidget)
 		{
 			UWidget->AddToViewport();
+		}
+	}
+}
+
+void APlayerCube::SaveRecord(int ISlot, FString FSlot)
+{
+	USaveRecord* SaveRecord = Cast<USaveRecord>(UGameplayStatics::CreateSaveGameObject(USaveRecord::StaticClass()));
+
+	if (SaveRecord)
+	{
+		if (Score > ScoreRecord)
+		{
+			print("dd");
+			SaveRecord->Score = Score;
+			SaveRecord->Seconds = Seconds;
+		}
+		else if (ScoreRecord == Score)
+		{
+			print("aa");
+			SaveRecord->Score = Score;
+
+			if (Seconds > ScoreRecord)
+			{
+				SaveRecord->Seconds = Seconds;
+			}	
+		}
+		else
+		{
+			SaveRecord->Score = ScoreRecord;
+			SaveRecord->Seconds = SecondRecord;
+		}
+		UGameplayStatics::SaveGameToSlot(SaveRecord, FSlot, ISlot);
+	}
+}
+
+void APlayerCube::LoadRecord(int ISlot, FString FSlot)
+{
+	USaveRecord* SaveRecord = Cast<USaveRecord>(UGameplayStatics::CreateSaveGameObject(USaveRecord::StaticClass()));
+	if (SaveRecord)
+	{
+		SaveRecord = Cast <USaveRecord>(UGameplayStatics::LoadGameFromSlot(FSlot, ISlot));
+
+		if (SaveRecord)
+		{
+			ScoreRecord = SaveRecord->Score;
+			SecondRecord = SaveRecord->Seconds;
 		}
 	}
 }

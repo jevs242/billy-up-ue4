@@ -66,6 +66,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 		int GetTryJump();
+
+	UFUNCTION(BlueprintPure)
+		int GetScoreRecord();
+
+	UFUNCTION(BlueprintPure)
+		float GetSecondRecord();
 	
 	UPROPERTY(EditAnywhere, Category = Property)
 		int HowManyStucture = 3;
@@ -110,7 +116,11 @@ public:
 	bool IsDead = false;
 
 
+	int ScoreRecord;
+	int SecondRecord;
 
+	void SaveRecord(int ISlot , FString FSlot);
+	void LoadRecord(int ISlot, FString FSlot);
 	
 
 	

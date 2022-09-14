@@ -213,7 +213,8 @@ void AStucture::DestroyBall()
 			{
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerCube->DeadSound, PlayerCube->GetActorLocation(), PlayerCube->GetActorRotation(), 0.5f, FMath::RandRange(0.5f, .7f));
 			}
-
+			PlayerCube->SaveRecord(0,"0");
+			PlayerCube->LoadRecord(0, "0");
 		}
 		PlayerCube->IsDead = true;
 	}
