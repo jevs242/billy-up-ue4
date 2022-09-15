@@ -47,6 +47,7 @@ private:
 	void Jump();
 	void MoveRight();
 	void MoveLeft();
+	void MoveDown();
 
 	UPROPERTY(EditAnywhere, Category = Property)
 		float Speed;

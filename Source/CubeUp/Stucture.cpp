@@ -85,6 +85,8 @@ void AStucture::BeginPlay()
 
 	Floor->SetWorldLocation(FVector(FloorLoc.X, RandomX ,FloorLoc.Z));
 
+	Speed = FMath::RandRange(250, 450);
+
 	TArray<AActor*> ReturnedActors;
 	UGameplayStatics::GetAllActorsOfClass(this, APlayerCube::StaticClass(), ReturnedActors);
 	PlayerCube = nullptr;
@@ -97,6 +99,9 @@ void AStucture::BeginPlay()
 	{
 		Speed *= -1;
 	}
+
+
+
 
 }
 

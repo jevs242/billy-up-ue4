@@ -48,6 +48,7 @@ void APlayerCube::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCube::Jump);
 	PlayerInputComponent->BindAction("MoveRight", IE_Pressed, this, &APlayerCube::MoveRight);
 	PlayerInputComponent->BindAction("MoveLeft", IE_Pressed, this, &APlayerCube::MoveLeft);
+	PlayerInputComponent->BindAction("MoveDown", IE_Pressed, this, &APlayerCube::MoveDown);
 
 }
 
@@ -58,6 +59,7 @@ void APlayerCube::BeginPlay()
 
 	Super::BeginPlay();
 	BeginLocationZ = FMath::RoundFromZero(Mesh->GetComponentLocation().Z);
+	
 	LoadRecord(0, "0");
 }
 
@@ -69,11 +71,11 @@ void APlayerCube::Tick(float DeltaTime)
 	{
 		Mesh->SetRelativeLocation(FVector(0, Mesh->GetRelativeLocation().Y, Mesh->GetRelativeLocation().Z));
 		RootComponent->SetRelativeLocation(Mesh->GetRelativeLocation());
-	}
 
-	if (Score == 0 && FMath::RoundFromZero(Mesh->GetComponentLocation().Z) == BeginLocationZ && TryJump == LimitTryJump)
-	{
-		TryJump = 0;
+		if (Score == 0 && FMath::RoundFromZero(Mesh->GetComponentLocation().Z) == BeginLocationZ && TryJump == LimitTryJump)
+		{
+			TryJump = 0;
+		}
 	}
 	
 	Seconds = GetWorld()->GetTimeSeconds();
@@ -84,7 +86,10 @@ void APlayerCube::Jump()
 {
 	if (TryJump < LimitTryJump)
 	{
-		Mesh->AddForce(FVector(0,0 , Speed));
+		if (Mesh)
+		{
+			Mesh->AddForce(FVector(0,0 , (Speed * 2)));
+		}
 		++TryJump;
 
 		if (JumpSound)
@@ -95,7 +100,10 @@ void APlayerCube::Jump()
 
 		if (UpParticle && !IsDead)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), UpParticle, Mesh->GetComponentLocation(), FRotator(0, 0, 0));
+			if (Mesh)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), UpParticle, Mesh->GetComponentLocation(), FRotator(0, 0, 0));
+			}
 		}
 	}
 }
@@ -104,7 +112,7 @@ void APlayerCube::MoveRight()
 {
 	if (Mesh)
 	{
-		Mesh->AddForce(FVector(0, -Speed / 1.5, 0));
+		Mesh->AddForce(FVector(0, (-Speed * 2) / 1.5, 0));
 	}
 }
 
@@ -112,7 +120,15 @@ void APlayerCube::MoveLeft()
 {
 	if (Mesh)
 	{
-		Mesh->AddForce(FVector(0, Speed / 1.5,0));
+		Mesh->AddForce(FVector(0, (Speed * 2) / 1.5,0));
+	}
+}
+
+void APlayerCube::MoveDown()
+{
+	if (Mesh)
+	{
+		Mesh->AddForce(FVector(0, 0, (-Speed * 2)));
 	}
 }
 
