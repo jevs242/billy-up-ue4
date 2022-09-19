@@ -88,7 +88,12 @@ void APlayerCube::Jump()
 	{
 		if (Mesh)
 		{
-			Mesh->AddForce(FVector(0,0 , (Speed * 2)));
+#if UE_BUILD_DEVELOPMENT
+			Mesh->AddForce(FVector(0, 0, (Speed)));
+#endif
+#if UE_BUILD_SHIPPING
+		Mesh->AddForce(FVector(0,0 , (Speed * 2)));
+#endif
 		}
 		++TryJump;
 
@@ -112,15 +117,27 @@ void APlayerCube::MoveRight()
 {
 	if (Mesh)
 	{
+#if UE_BUILD_DEVELOPMENT
+		Mesh->AddForce(FVector(0, (-Speed) / 1.5, 0));
+#endif
+#if UE_BUILD_SHIPPING
 		Mesh->AddForce(FVector(0, (-Speed * 2) / 1.5, 0));
+#endif
 	}
 }
 
 void APlayerCube::MoveLeft()
 {
+
 	if (Mesh)
 	{
-		Mesh->AddForce(FVector(0, (Speed * 2) / 1.5,0));
+#if UE_BUILD_DEVELOPMENT
+		Mesh->AddForce(FVector(0, (Speed) / 1.5, 0));
+#endif
+#if UE_BUILD_SHIPPING
+		Mesh->AddForce(FVector(0, (Speed * 2) / 1.5, 0));
+#endif
+		
 	}
 }
 
@@ -128,7 +145,13 @@ void APlayerCube::MoveDown()
 {
 	if (Mesh)
 	{
+#if UE_BUILD_DEVELOPMENT
+		Mesh->AddForce(FVector(0, 0, (-Speed)));
+#endif
+#if UE_BUILD_SHIPPING
 		Mesh->AddForce(FVector(0, 0, (-Speed * 2)));
+#endif
+		
 	}
 }
 
