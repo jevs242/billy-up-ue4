@@ -134,7 +134,7 @@ void AStucture::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		APlayerCube* Player = Cast<APlayerCube>(OtherActor);
 		if (Player)
 		{
-			if (!IsUsedFloor || IsUsedFloor && Player->TryJump != 0)
+			if (!IsUsedFloor || (IsUsedFloor && Player->TryJump != 0))
 			{
 				if (Player)
 				{
